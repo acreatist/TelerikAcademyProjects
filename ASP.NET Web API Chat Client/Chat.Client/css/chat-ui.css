@@ -1,0 +1,14 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+}
+
+#chat-wrapper { min-width: 960px; margin: 0 auto; }
+
+/* --------------------
+    CHAT WINDOW
+    ---------------- */
+
+.chat-message { width: 80%; }
+.chat-message-right { text-align: right; }
+div.list-group { cursor: pointer }

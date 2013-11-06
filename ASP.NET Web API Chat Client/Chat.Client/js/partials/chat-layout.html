@@ -1,0 +1,106 @@
+﻿<div id="chat-panel" style="margin-top: 20px;">
+    <div class="row">
+        <div class="col-lg-12">
+            <nav class="navbar navbar-default" role="navigation">
+                <div class="navbar-header"><span class="navbar-brand">Simple Web Chat</span></div>
+                <p class="navbar-text pull-right">
+                    Logged in as: <span data-bind="text: currentUserName">Mark Otto</span>
+                    <button class="btn btn-xs btn-default">logout</button>
+                </p>
+            </nav>
+        </div>
+    </div>   
+
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title clearfix">
+                        Chat Rooms
+                        <button class="btn btn-xs btn-primary pull-right" id="newchatRoom">New Chat Room</button>
+                    </h3>
+                </div>
+                <div class="panel-body clearfix" id="chatroomsList">
+                    <div class="list-group" data-bind="foreach: rooms">
+                        <div class="list-group-item" tabindex="-1" data-bind="click: $parent.selectRoom">
+                            <span data-bind="text: $data.name"></span>
+                            
+                            <a href="#" class="badge alert-danger" data-bind="visible: isOwn, click: $parent.deleteRoom">
+                                delete
+                            </a>
+
+                            <span class="badge alert-info" data-bind="text: $data.postsCount"></span>
+                            
+                        </div>
+
+                        <!--<button type="button" class="btn btn-default btn-xs" data-bind="visible: isOwn, click: $parent.deleteRoom">
+                            <span class="glyphicon glyphicon-remove-circle"></span> DELETE
+                        </button>-->
+                    </div>
+
+                    <form id="newChatRoomForm">
+                        <div class="form-group">
+                            <label class="sr-only" for="newChatRoom">New Chat Room</label>
+                            <input type="text" name="newRoom" id="newChatRoom" placeholder="New Chat Room Name" data-bind="value: newRoomName" class="form-control" />
+                        </div>
+                        <button class="btn btn-xs pull-right" data-bind='click: function () { createRoom(function () { $("#newChatRoomForm").hide(); }); }'>Create</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Current Chat</h3>
+                </div>
+
+                <div class="panel-body" data-bind="ifnot: selectedRoom">
+                    <p class="well alert-info lead">Please, select a room</p>
+                </div>
+
+                <!-- ko if: selectedRoom -->
+                    <div class="panel-body clearfix" data-bind="foreach: posts">
+                    
+                        <div class="well well-sm chat-message" data-bind="text: content">Message from me</div>
+                        <!--<div class="well well-sm chat-message chat-message-right pull-right clearfix"><span class="label label-success pull-right">User 1</span>Message from user 1</div>-->
+                    </div>
+
+                    <div class="panel-footer" data-bind="template: { name: 'message-form' }"></div>
+
+                    <script type="text/html" id="message-form">
+                        <form class="form clearfix" role="form" data-bind="ifnot: isSubscribed">
+                            <div class="form-group col-lg-11">
+                                <textarea class="form-control" id="messageInput" rows="3" data-bind="value: newPost"></textarea>
+                            </div>
+                            <div class="col-1">
+                                <button type="submit" data-bind="click: postMessage" class="btn btn-default">Post</button>
+                            </div>
+                        </form>
+
+                        <div data-bind="if: isSubscribed">
+                            <button type="submit" data-bind="click: subscribe" class="btn btn-default">Enter room</button>
+                        </div>
+                    </script>
+                <!-- /ko -->
+            </div>
+        </div>
+
+        <!-- we don't have a working subscibe REST method... '-->
+        <!--<div class="col-lg-3">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Chat Room Users</h3>
+                </div>
+                
+                <div class="panel-body">
+                    <div class="list-group" data-bind="template: { name: 'users-template', foreach: users }"></div>
+                </div>
+
+                <script type="text/html" id="users-template">
+                    <a href="#" class="list-group-item" tabindex="-1" data-bind="click: $parent.selectUser"><span data-bind="text: username"></span></a>
+                </script>
+            </div>
+        </div>-->
+    </div>
+</div>

@@ -18,4 +18,4 @@ Key moments:
 
 Demo app
 ----------
-You can see a not-perfect, but working [demo application](http://goo.gl/Qv3pF2/ "Simple Knickoutjs web chat")
+You can see a not-perfect, but working <a href="http://goo.gl/Qv3pF2" title="Simple Knickoutjs web chat" target="_blank">demo application</a>

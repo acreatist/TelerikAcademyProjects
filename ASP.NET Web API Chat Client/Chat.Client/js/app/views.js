@@ -29,6 +29,10 @@ WebChat.Views = (function () {
             return loadPartialHtml("register-view", callback);
         },
 
+        registerView: function (callback) {
+            return loadPartialHtml("register-view", callback);
+        },
+
         chatLayout: function (callback) {
             return loadPartialHtml("chat-layout", callback);
         },

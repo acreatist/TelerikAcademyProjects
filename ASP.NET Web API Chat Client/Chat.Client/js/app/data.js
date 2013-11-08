@@ -7,6 +7,7 @@ WebChat.DataPersisters = (function () {
 
     var saveUserToStorage = function (userData) {
         localStorage.setItem("username", userData.Username);
+        localStorage.setItem("password", userData.Password);
         localStorage.setItem("userId", userData.Id);
     }
 
@@ -27,19 +28,54 @@ WebChat.DataPersisters = (function () {
             });
         }
 
-        self.logout = function (userData, success, fail) {
-            httpRequester.putJSON(self.apiUrl + "logout", userData, function (data) {
-                clearUserStorage();
+        self.register = function (userData, success, fail) {
+            httpRequester.postJSON(self.apiUrl + "register", userData, function (data) {
+                saveUserToStorage(data);
                 success(data);
             }, function (err) {
                 fail(err);
             });
         }
 
+        self.logout = function (success, fail) {
+            var userData = {};
+            self.getCurrentUserData(function (userData) {
+                var logoutData = {
+                    "ChatRooms": [],
+                    "Posts": [],
+                    "Id": userData.UserId,
+                    "Picture": userData.Picture,
+                    "Username": userData.Username,
+                    "Password": userData.Password,
+                    "IsOnline": userData.IsOnline
+                }
+                
+                success();
+
+                // Remove if PUT goes on
+                clearUserStorage();
+
+                // TODO: why the put request doesn't go...
+                // console.log(self.apiUrl + "logout", JSON.stringify(logoutData));
+                //httpRequester.putJSON(self.apiUrl + "logout", JSON.stringify(logoutData), function (res) {
+                //    clearUserStorage();
+                //    success(res);
+                //}, function (err) {
+                //    fail(err);
+                //});
+            }, function (err) {
+                fail(err);
+            });
+
+            //clearUserStorage();
+            //success();
+        }
+
         self.getCurrentUserData = function (success, fail) {
             if ((localStorage.getItem("userId") != "") || (localStorage.getItem("userId") != undefined)) {
                 httpRequester.getJSON(self.apiUrl + "get/" + localStorage.getItem("userId"),
                     function (userData) {
+                        userData.Password = localStorage.getItem("password");
                         success(userData);
                     },
                     function (err) {

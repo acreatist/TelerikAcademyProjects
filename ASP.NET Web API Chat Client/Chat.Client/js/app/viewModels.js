@@ -11,7 +11,13 @@ WebChat.ViewModels = (function () {
 
         self.username = ko.observable();
         self.password = ko.observable();
+        self.passwordConfirm = ko.observable();
+
         self.isLogged = ko.observable(false);
+        self.loggedUsername = ko.observable();
+
+        self.err = ko.observable(false);
+        self.errMessage = ko.observable();
 
         self.login = function () {
             var userData = {
@@ -37,9 +43,43 @@ WebChat.ViewModels = (function () {
             });
         }
 
+        self.register = function () {
+            var userData = {
+                Password: self.password(),
+                Username: self.username()
+            }
+
+            if (self.password() === self.passwordConfirm()) {
+                
+                usersDataHelper.register(userData, function (loggedUserData) {
+                    self.isLogged(true);
+                    currUserData = loggedUserData;
+                    $.event.trigger({
+                        type: "logged",
+                        message: "User Loggedin",
+                        time: new Date()
+                    });
+                }, function () {
+                    $.event.trigger({
+                        type: "error",
+                        message: "Login error, please try again.",
+                        time: new Date()
+                    });
+                });
+            } else {
+                self.err(true);
+                self.errMessage("Password missmatch");
+            }
+        }
+
         self.logout = function () {
             usersDataHelper.logout(function () {
                 self.isLogged(false);
+                $.event.trigger({
+                    type: "loggedout",
+                    message: "Logged out",
+                    time: new Date()
+                });
             }, function (err) {
                 console.log(err);
             });
@@ -85,6 +125,27 @@ WebChat.ViewModels = (function () {
         self.isSubscribed = ko.observable(false);
         self.roomId = 0;
 
+        var populateCurrRoomData = function (roomData) {
+            self.selectedRoom(roomData);
+            self.users([]);
+            self.posts([]);
+
+            for (var u = 0; u < roomData.Users.length; u++) {
+                if (roomData.Users[u].Username === currUserData.username) {
+                    self.isSubscribed(true);
+                }
+
+                self.users.push(new UserModel({ "Username": roomData.Users[u].Username }));
+            }
+
+            for (var p = 0; p < roomData.Posts.length; p++) {
+                self.posts.push(new PostModel({
+                    "UserId": roomData.Posts[p].Username,
+                    "Content": roomData.Posts[p].Content
+                }));
+            }
+        }
+
         self.getRoomData = function () {
             dataHelpers.chatRooms().getAll(function (roomsData) {
                 self.rooms([]);
@@ -98,26 +159,15 @@ WebChat.ViewModels = (function () {
             });
         }
 
+        self.getCurrRoomMessages = function () {
+            dataHelpers.chatRooms().getById(self.selectedRoom().ChatRoomId, function (roomData) {
+                populateCurrRoomData(roomData);
+            });
+        }
+
         self.selectRoom = function (room) {
-            self.users([]);
-            self.posts([]);
-
             dataHelpers.chatRooms().getById(room.id(), function (roomData) {
-                self.selectedRoom(roomData);
-                for (var u = 0; u < roomData.Users.length; u++) {
-                    if (roomData.Users[u].Username === currUserData.username) {
-                        self.isSubscribed(true);
-                    }
-
-                    self.users.push(new UserModel({ "Username": roomData.Users[u].Username }));
-                }
-
-                for (var p = 0; p < roomData.Posts.length; p++) {
-                    self.posts.push(new PostModel({
-                        "UserId": roomData.Posts[p].Username,
-                        "Content": roomData.Posts[p].Content
-                    }));
-                }
+                populateCurrRoomData(roomData);
             });
         }
 
@@ -146,7 +196,6 @@ WebChat.ViewModels = (function () {
         }
 
         self.deleteRoom = function (room) {
-            console.log(room.id());
             dataHelpers.chatRooms().delete(room.id(), function () {
                 self.rooms.remove(room);
                 self.selectedRoom(false);

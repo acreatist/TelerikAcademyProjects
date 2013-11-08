@@ -1,4 +1,4 @@
-﻿<div class="modal fade" id="registerDialog" tabindex="-1" role="dialog" aria-labelledby="registerDialogLabell" aria-hidden="true">
+﻿<div class="modal hide" id="registerDialog" tabindex="-1" role="dialog" aria-labelledby="registerDialogLabell">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,37 +11,35 @@
                     <div class="form-group">
                         <label for="inputUsername" class="col-lg-2 control-label">Username</label>
                         <div class="col-lg-10">
-                            <input type="text" class="form-control" id="Text1" placeholder="Username">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="inputAvatar" class="col-lg-2 control-label">Profile Picture</label>
-                        <div class="col-lg-10">
-                            <input type="file" class="form-control" id="inputAvatar" placeholder="Confirm Password">
+                            <input type="text" class="form-control" id="Text1" placeholder="Username" data-bind="value: username">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputPassword" class="col-lg-2 control-label">Password</label>
                         <div class="col-lg-10">
-                            <input type="password" class="form-control" id="Password1" placeholder="Password">
+                            <input type="password" class="form-control" id="Password1" placeholder="Password" data-bind="value: password">
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="inputPasswordConfirm" class="col-lg-2 control-label">Confirm</label>
                         <div class="col-lg-10">
-                            <input type="password" class="form-control" id="inputPasswordConfirm" placeholder="Confirm Password">
+                            <input type="password" class="form-control" id="inputPasswordConfirm" placeholder="Confirm Password" data-bind="value: passwordConfirm">
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-lg-offset-2 col-lg-10">
-                            <button type="submit" class="btn btn-default" id="btn-register">Register</button>
+                            <button type="submit" class="btn btn-default" id="btn-register" data-bind="click: register">Register</button>
                         </div>
                     </div>
                 </form>
+
+                <div class="errMessage" data-bind="visible: err">
+                    <p class="alert alert-danger" data-bind="text: errMessage"></p>
+                </div>
             </div>
 
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+                <button type="button" data-dismiss="modal" id="btn-cancel-register" class="btn">Cancel</button>
             </div>
         </div>
         <!-- /.modal-content -->
